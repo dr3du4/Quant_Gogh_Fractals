@@ -1,16 +1,49 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from qiskit import QuantumCircuit, Aer, execute
+from qiskit.visualization import plot_histogram
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+qc = QuantumCircuit(3, 3)  # Alice, Bob, Psi
+
+qc.h(0)
+qc.rz(1.57, 0)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+qc.h(1)
+qc.cx(1, 2)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+qc.cx(0, 1)
+qc.h(0)
+qc.measure([0, 1], [0, 1])
+
+
+qc.cz(0, 2)
+qc.cx(1, 2)
+
+
+simulator = Aer.get_backend('qasm_simulator')
+job = execute(qc, simulator, shots=1024)
+result = job.result()
+counts = result.get_counts(qc)
+
+
+print("Wyniki teleportacji:")
+print(counts)
+
+
+plot_histogram(counts)
+
+
+expected_state = {'000': 259}
+teleported_state = counts
+
+
+if teleported_state == expected_state:
+    print(teleported_state)
+    print(expected_state)
+    print("Stan kwantowy został skutecznie przeteleportowany na qudit Boba.")
+else:
+    print(teleported_state)
+    print(expected_state)
+    print("Błąd: Stan kwantowy nie został poprawnie przeteleportowany.")
+
