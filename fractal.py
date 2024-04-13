@@ -1,8 +1,7 @@
 # Importing standard python libraries
 import random
-
 import numpy as np
-from math import pi, sqrt
+from math import pi
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 # Importing standard Qiskit libraries
@@ -114,7 +113,8 @@ def julia_set(c=z, height=heightsize, width=widthsize, x=0, y=0, zoom=1, max_ite
     return div_time
 
 # plot the Julia set fractal
-plt.figure()
+plt.figure(dpi=300)  # Ustawiamy rozdzielczość na 300 DPI, co odpowiada wymiarom w pikselach
+plt.axis('off')
 # Definicja własnej mapy kolorów
 colors = [ '#3d499d', '#3b44a4', '#3940aa', '#373cb1', '#3537b8', '#3332bf', '#312ec6', '#2f29cc', '#2d24d3', '#2b20da',
     '#291be1', '#2717e7', '#2512ee', '#230df5', '#2108fc', '#1f1a37', '#364e60', '#4c847f', '#62ba9f', '#78f0bf',
@@ -122,9 +122,7 @@ colors = [ '#3d499d', '#3b44a4', '#3940aa', '#373cb1', '#3537b8', '#3332bf', '#3
     '#ffffb3', '#ffff97', '#ffff7b', '#ffff5f', '#ffff43', '#ffff27', '#ffff0b', '#f7ed00', '#ebdb00', '#dfc400'
 ]
 cmap_custom = ListedColormap(colors)
-
-plt.imshow(julia_set(), cmap=cmap_custom)  # Użycie własnej mapy kolorów
-# Generate and display the Julia set fractal
-#plt.imshow(julia_set(), cmap='colors')  # viridis', 'plasma', 'inferno', 'magma', 'cividis'
-plt.savefig('filename.png')
+aspect_ratio = widthsize / heightsize
+plt.imshow(julia_set(), cmap=cmap_custom, extent=[-aspect_ratio/2, aspect_ratio/2, -0.5, 0.5], aspect=aspect_ratio)
+plt.savefig('filename.png', bbox_inches='tight', pad_inches=0, transparent=True)
 plt.show(block=True)
