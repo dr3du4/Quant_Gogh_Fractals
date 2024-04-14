@@ -8,6 +8,7 @@ from matplotlib.colors import ListedColormap
 from qiskit import *
 from qiskit.visualization import plot_state_qsphere
 from qiskit_aer import *
+from PIL import  Image
 
 def randomize_circuit(circuit):
     # Losowe kąty dla bramki U
@@ -124,5 +125,29 @@ colors = [ '#3d499d', '#3b44a4', '#3940aa', '#373cb1', '#3537b8', '#3332bf', '#3
 cmap_custom = ListedColormap(colors)
 aspect_ratio = widthsize / heightsize
 plt.imshow(julia_set(), cmap=cmap_custom, extent=[-aspect_ratio/2, aspect_ratio/2, -0.5, 0.5], aspect=aspect_ratio)
-plt.savefig('filename.png', bbox_inches='tight', pad_inches=0, transparent=True)
+plt.savefig('fractal.png', bbox_inches='tight', pad_inches=0, transparent=True)
 plt.show(block=True)
+
+image1 = Image.open("fractal.png")
+image2 = Image.open("gogh_night.png")
+
+nowy_rozmiar = (int(image1.width // 1.6), image1.height // 2)
+
+# Zmniejsz obraz
+image1 = image1.resize(nowy_rozmiar)
+
+# Check the sizes of the images
+width1, height1 = image1.size
+width2, height2 = image2.size
+
+# Create a new image with an alpha channel
+new_image = Image.new("RGBA", (width2, height2+100))
+
+# Paste image1 onto the new image at (0,0)
+new_image.paste(image1, (0, 0))
+
+# Paste image2 onto the new image at (0, height1), using the transparency mask of image2
+new_image.paste(image2, (0, 100), image2)
+
+# Save the new image
+new_image.save("new_image.png")
